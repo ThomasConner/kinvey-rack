@@ -1,0 +1,22 @@
+{
+  "src": [
+    "src/**/*.js"
+  ],
+  "browserify": {
+    "entries": "./build/rack.js",
+    "dest": "./dist",
+    "outputName": "rack.js",
+    "insertGlobals": false,
+    "debug": false,
+    "standalone": "Rack",
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "releaseName": "rack.min.js",
+  "build": "build",
+  "dist": "dist",
+  "test": {
+    "karmaConfig": "/test/karma.conf.js"
+  }
+}
