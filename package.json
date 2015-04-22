@@ -4,14 +4,16 @@
   "main": "build/rack",
   "dependencies": {},
   "repository": {},
-  "devDependencies": {
+  "dependencies": {
     "ascii-tree": "^0.1.1",
+    "lodash": "^3.7.0"
+  },
+  "devDependencies": {
     "babel": "^5.1.9",
     "babelify": "^6.0.2",
     "browserify": "^9.0.8",
     "browserify-shim": "^3.8.5",
     "chai": "^2.2.0",
-    "es6-shim": "^0.28.1",
     "gulp": "^3.8.11",
     "gulp-babel": "^5.1.0",
     "gulp-clean": "^0.3.1",
@@ -26,7 +28,6 @@
     "karma-mocha-reporter": "^1.0.2",
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-safari-launcher": "^0.1.1",
-    "lodash": "^3.7.0",
     "mocha": "^2.2",
     "run-sequence": "^1.0.2",
     "sinon": "^1.7",
