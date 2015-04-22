@@ -1,5 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Rack = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (global){
 'use strict';
 
 var _slicedToArray = function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } };
@@ -8,7 +7,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _ = (typeof window !== "undefined" ? window._ : typeof global !== "undefined" ? global._ : null);
 var asciitree = require('ascii-tree');
 
 var _execute = (function (_execute2) {
@@ -52,12 +50,12 @@ var Rack = (function () {
 
     _classCallCheck(this, Rack);
 
-    if (_.isArray(name)) {
+    if (Array.isArray(name)) {
       middlewares = name;
       name = 'Rack';
     }
 
-    if (_.isUndefined(middlewares) || _.isNull(middlewares)) {
+    if (!Array.isArray(middlewares)) {
       middlewares = [];
     }
 
@@ -79,7 +77,7 @@ var Rack = (function () {
 
       if (!_.isNumber(index)) {
         var instance = index;
-        index = _.findIndex(middlewares, function (middleware) {
+        index = Array.findIndex(middlewares, function (middleware) {
           return middleware instanceof instance;
         });
       }
@@ -93,7 +91,7 @@ var Rack = (function () {
   }, {
     key: 'use',
     value: function use(middleware) {
-      if (!_.isNull(middleware) && !_.isUndefined(middleware)) {
+      if (middleware !== null && middleware !== undefined) {
         this._middlewares.push(middleware);
       }
     }
@@ -101,7 +99,7 @@ var Rack = (function () {
     key: 'useBefore',
     value: function useBefore(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = _.findIndex(middlewares, function (middleware) {
+      var index = Array.findIndex(middlewares, function (middleware) {
         return middleware instanceof instance;
       });
 
@@ -114,7 +112,7 @@ var Rack = (function () {
     key: 'useAfter',
     value: function useAfter(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = _.findIndex(middlewares, function (middleware) {
+      var index = Array.findIndex(middlewares, function (middleware) {
         return middleware instanceof instance;
       });
 
@@ -127,7 +125,7 @@ var Rack = (function () {
     key: 'swap',
     value: function swap(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = _.findIndex(middlewares, function (middleware) {
+      var index = Array.findIndex(middlewares, function (middleware) {
         return middleware instanceof instance;
       });
 
@@ -140,7 +138,7 @@ var Rack = (function () {
     key: 'remove',
     value: function remove(instance) {
       var middlewares = this.middlewares;
-      var index = _.findIndex(middlewares, function (middleware) {
+      var index = Array.findIndex(middlewares, function (middleware) {
         return middleware instanceof instance;
       });
 
@@ -199,7 +197,6 @@ var Rack = (function () {
 })();
 
 module.exports = Rack;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"ascii-tree":2}],2:[function(require,module,exports){
 var levels = [];
 var freetree = require('freetree');

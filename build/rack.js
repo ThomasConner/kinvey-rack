@@ -6,7 +6,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _ = require('lodash');
 var asciitree = require('ascii-tree');
 
 var _execute = (function (_execute2) {
@@ -50,12 +49,12 @@ var Rack = (function () {
 
     _classCallCheck(this, Rack);
 
-    if (_.isArray(name)) {
+    if (Array.isArray(name)) {
       middlewares = name;
       name = 'Rack';
     }
 
-    if (_.isUndefined(middlewares) || _.isNull(middlewares)) {
+    if (!Array.isArray(middlewares)) {
       middlewares = [];
     }
 
@@ -77,7 +76,7 @@ var Rack = (function () {
 
       if (!_.isNumber(index)) {
         var instance = index;
-        index = _.findIndex(middlewares, function (middleware) {
+        index = Array.findIndex(middlewares, function (middleware) {
           return middleware instanceof instance;
         });
       }
@@ -91,7 +90,7 @@ var Rack = (function () {
   }, {
     key: 'use',
     value: function use(middleware) {
-      if (!_.isNull(middleware) && !_.isUndefined(middleware)) {
+      if (middleware !== null && middleware !== undefined) {
         this._middlewares.push(middleware);
       }
     }
@@ -99,7 +98,7 @@ var Rack = (function () {
     key: 'useBefore',
     value: function useBefore(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = _.findIndex(middlewares, function (middleware) {
+      var index = Array.findIndex(middlewares, function (middleware) {
         return middleware instanceof instance;
       });
 
@@ -112,7 +111,7 @@ var Rack = (function () {
     key: 'useAfter',
     value: function useAfter(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = _.findIndex(middlewares, function (middleware) {
+      var index = Array.findIndex(middlewares, function (middleware) {
         return middleware instanceof instance;
       });
 
@@ -125,7 +124,7 @@ var Rack = (function () {
     key: 'swap',
     value: function swap(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = _.findIndex(middlewares, function (middleware) {
+      var index = Array.findIndex(middlewares, function (middleware) {
         return middleware instanceof instance;
       });
 
@@ -138,7 +137,7 @@ var Rack = (function () {
     key: 'remove',
     value: function remove(instance) {
       var middlewares = this.middlewares;
-      var index = _.findIndex(middlewares, function (middleware) {
+      var index = Array.findIndex(middlewares, function (middleware) {
         return middleware instanceof instance;
       });
 
