@@ -6,9 +6,8 @@
     "entries": "./build/rack.js",
     "dest": "./dist",
     "outputName": "rack.js",
-    "insertGlobals": false,
-    "debug": false,
     "standalone": "Rack",
+    "noParse": [],
     "transform": [
       "browserify-shim"
     ]

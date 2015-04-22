@@ -19,14 +19,14 @@ var _execute = function(index, middlewares, request, response) {
 };
 
 class Rack {
-  constructor(name = 'Rack', middlewares = new Array()) {
+  constructor(name = 'Rack', middlewares = []) {
     if (_.isArray(name)) {
       middlewares = name;
       name = 'Rack';
     }
 
     if (_.isUndefined(middlewares) || _.isNull(middlewares)) {
-      middlewares = new Array();
+      middlewares = [];
     }
 
     this.name = name;
@@ -122,15 +122,17 @@ class Rack {
   toString(level = 0) {
     var middlewares = this.middlewares;
     var str = '';
+    var i, len;
+    var middleware;
 
-    for (var i = 0; i <= level; i++) {
+    for (i = 0; i <= level; i++) {
       str += '#';
     }
 
     str += this.name;
 
-    for (var i = 0, len = middlewares.length; i < len; i++) {
-      var middleware = middlewares[i];
+    for (i = 0, len = middlewares.length; i < len; i++) {
+      middleware = middlewares[i];
       str += `\n${middleware.toString(level + 1)}`;
     }
 
