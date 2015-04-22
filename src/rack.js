@@ -1,4 +1,3 @@
-var _ = require('lodash');
 var asciitree = require('ascii-tree');
 
 var _execute = function(index, middlewares, request, response) {
@@ -20,12 +19,12 @@ var _execute = function(index, middlewares, request, response) {
 
 class Rack {
   constructor(name = 'Rack', middlewares = []) {
-    if (_.isArray(name)) {
+    if (Array.isArray(name)) {
       middlewares = name;
       name = 'Rack';
     }
 
-    if (_.isUndefined(middlewares) || _.isNull(middlewares)) {
+    if (!Array.isArray(middlewares)) {
       middlewares = [];
     }
 
@@ -42,7 +41,7 @@ class Rack {
 
     if (!_.isNumber(index)) {
       var instance = index;
-      index = _.findIndex(middlewares, function(middleware) {
+      index = Array.findIndex(middlewares, function(middleware) {
         return (middleware instanceof instance);
       });
     }
@@ -55,14 +54,14 @@ class Rack {
   }
 
   use(middleware) {
-    if (!_.isNull(middleware) && !_.isUndefined(middleware)) {
+    if (middleware !== null && middleware !== undefined) {
       this._middlewares.push(middleware);
     }
   }
 
   useBefore(instance, middleware) {
     var middlewares = this.middlewares;
-    var index = _.findIndex(middlewares, function(middleware) {
+    var index = Array.findIndex(middlewares, function(middleware) {
       return (middleware instanceof instance);
     });
 
@@ -74,7 +73,7 @@ class Rack {
 
   useAfter(instance, middleware) {
     var middlewares = this.middlewares;
-    var index = _.findIndex(middlewares, function(middleware) {
+    var index = Array.findIndex(middlewares, function(middleware) {
       return (middleware instanceof instance);
     });
 
@@ -86,7 +85,7 @@ class Rack {
 
   swap(instance, middleware) {
     var middlewares = this.middlewares;
-    var index = _.findIndex(middlewares, function(middleware) {
+    var index = Array.findIndex(middlewares, function(middleware) {
       return (middleware instanceof instance);
     });
 
@@ -98,7 +97,7 @@ class Rack {
 
   remove(instance) {
     var middlewares = this.middlewares;
-    var index = _.findIndex(middlewares, function(middleware) {
+    var index = Array.findIndex(middlewares, function(middleware) {
       return (middleware instanceof instance);
     });
 

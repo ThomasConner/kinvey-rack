@@ -5,8 +5,7 @@
   "dependencies": {},
   "repository": {},
   "dependencies": {
-    "ascii-tree": "^0.1.1",
-    "lodash": "^3.7.0"
+    "ascii-tree": "^0.1.1"
   },
   "devDependencies": {
     "babel": "^5.1.9",
