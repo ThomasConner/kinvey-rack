@@ -1,0 +1,14 @@
+{
+  "preset": "airbnb",
+
+  "requireParenthesesAroundIIFE": true,
+  "validateLineBreaks": "LF",
+  "validateIndentation": "\t",
+
+  "disallowKeywords": ["with"],
+  "disallowSpacesInsideObjectBrackets": null,
+  "disallowImplicitTypeConversion": ["string"],
+
+  // Temporary
+  "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties"
+}
