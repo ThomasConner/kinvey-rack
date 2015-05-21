@@ -1,3 +1,4 @@
+require('babel/polyfill');
 import asciitree from 'ascii-tree';
 
 let isNumeric = function (obj) {
