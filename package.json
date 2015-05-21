@@ -1,6 +1,6 @@
 {
   "name": "kinvey-rack",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "main": "build/rack",
   "repository": {},
   "dependencies": {

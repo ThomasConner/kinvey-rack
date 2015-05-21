@@ -16,7 +16,7 @@ let execute = async function (index, middlewares, request, response) {
   index = index + 1;
 
   if (index < middlewares.length) {
-    await execute.call(this, index, middlewares, result[0], result[1]);
+    result = await execute.call(this, index, middlewares, result[0], result[1]);
   }
 
   return result;

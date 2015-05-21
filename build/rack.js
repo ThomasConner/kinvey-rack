@@ -39,7 +39,7 @@ var _execute = function _execute(index, middlewares, request, response) {
         index = index + 1;
 
         if (!(index < middlewares.length)) {
-          context$1$0.next = 10;
+          context$1$0.next = 11;
           break;
         }
 
@@ -47,9 +47,12 @@ var _execute = function _execute(index, middlewares, request, response) {
         return _execute.call(this, index, middlewares, result[0], result[1]);
 
       case 10:
-        return context$1$0.abrupt('return', result);
+        result = context$1$0.sent;
 
       case 11:
+        return context$1$0.abrupt('return', result);
+
+      case 12:
       case 'end':
         return context$1$0.stop();
     }
