@@ -1,20 +1,24 @@
-var asciitree = require('ascii-tree');
+import asciitree from 'ascii-tree';
 
-var _execute = function(index, middlewares, request, response) {
+let isNumeric = function (obj) {
+  return !Array.isArray(obj) && (obj - parseFloat(obj) + 1) >= 0;
+};
+
+let execute = async function (index, middlewares, request, response) {
   if (index < -1 || index >= middlewares.length) {
     throw new Error(`Index ${index} is out of bounds.`);
   }
 
-  var middleware = middlewares[index];
-  return middleware.handle(request, response).then(([request, response]) => {
-    index += 1;
+  let middleware = middlewares[index];
+  let result = await middleware.handle(request, response);
 
-    if (index < middlewares.length) {
-      return _execute.call(this, index, middlewares, request, response);
-    }
+  index = index + 1;
 
-    return [request, response];
-  });
+  if (index < middlewares.length) {
+    await execute.call(this, index, middlewares, result[0], result[1]);
+  }
+
+  return result;
 };
 
 class Rack {
@@ -37,11 +41,11 @@ class Rack {
   }
 
   getMiddleware(index = -1) {
-    var middlewares = this.middlewares;
+    let middlewares = this.middlewares;
 
-    if (!_.isNumber(index)) {
-      var instance = index;
-      index = Array.findIndex(middlewares, function(middleware) {
+    if (!isNumeric(index)) {
+      let instance = index;
+      index = Array.findIndex(middlewares, function (middleware) {
         return (middleware instanceof instance);
       });
     }
@@ -60,9 +64,9 @@ class Rack {
   }
 
   useBefore(instance, middleware) {
-    var middlewares = this.middlewares;
-    var index = Array.findIndex(middlewares, function(middleware) {
-      return (middleware instanceof instance);
+    let middlewares = this.middlewares;
+    let index = Array.findIndex(middlewares, function (existingMiddleware) {
+      return (existingMiddleware instanceof instance);
     });
 
     if (index > -1) {
@@ -72,9 +76,9 @@ class Rack {
   }
 
   useAfter(instance, middleware) {
-    var middlewares = this.middlewares;
-    var index = Array.findIndex(middlewares, function(middleware) {
-      return (middleware instanceof instance);
+    let middlewares = this.middlewares;
+    let index = Array.findIndex(middlewares, function (existingMiddleware) {
+      return (existingMiddleware instanceof instance);
     });
 
     if (index > -1) {
@@ -84,9 +88,9 @@ class Rack {
   }
 
   swap(instance, middleware) {
-    var middlewares = this.middlewares;
-    var index = Array.findIndex(middlewares, function(middleware) {
-      return (middleware instanceof instance);
+    let middlewares = this.middlewares;
+    let index = Array.findIndex(middlewares, function (existingMiddleware) {
+      return (existingMiddleware instanceof instance);
     });
 
     if (index > -1) {
@@ -96,9 +100,9 @@ class Rack {
   }
 
   remove(instance) {
-    var middlewares = this.middlewares;
-    var index = Array.findIndex(middlewares, function(middleware) {
-      return (middleware instanceof instance);
+    let middlewares = this.middlewares;
+    let index = Array.findIndex(middlewares, function (existingMiddleware) {
+      return (existingMiddleware instanceof instance);
     });
 
     if (index > -1) {
@@ -108,9 +112,9 @@ class Rack {
   }
 
   execute(request) {
-    var middlewares = this.middlewares;
+    let middlewares = this.middlewares;
     if (middlewares.length > 0) {
-      return _execute.call(this, 0, middlewares, request);
+      return execute.call(this, 0, middlewares, request);
     }
   }
 
@@ -119,20 +123,21 @@ class Rack {
   }
 
   toString(level = 0) {
-    var middlewares = this.middlewares;
-    var str = '';
-    var i, len;
-    var middleware;
+    let middlewares = this.middlewares;
+    let str = '';
+    let i = 0;
+    let len = 0;
+    let middleware;
 
     for (i = 0; i <= level; i++) {
-      str += '#';
+      str = `${str}#`;
     }
 
-    str += this.name;
+    str = `${str}this.name`;
 
     for (i = 0, len = middlewares.length; i < len; i++) {
       middleware = middlewares[i];
-      str += `\n${middleware.toString(level + 1)}`;
+      str = `${str}\n${middleware.toString(level + 1)}`;
     }
 
     if (level > 0) {
