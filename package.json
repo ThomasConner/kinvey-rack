@@ -41,8 +41,7 @@
   },
   "scripts": {
     "build": "gulp build",
-    "test": "make test",
-    "postinstall": "gulp build"
+    "test": "make test"
   },
   "browserify-shim": {}
 }

@@ -2,34 +2,58 @@
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var asciitree = require('ascii-tree');
+var _asciiTree = require('ascii-tree');
+
+var _asciiTree2 = _interopRequireDefault(_asciiTree);
+
+require('babel/polyfill');
+
+var isNumeric = function isNumeric(obj) {
+  return !Array.isArray(obj) && obj - parseFloat(obj) + 1 >= 0;
+};
 
 var _execute = function _execute(index, middlewares, request, response) {
-  var _this = this;
+  var middleware, result;
+  return regeneratorRuntime.async(function _execute$(context$1$0) {
+    while (1) switch (context$1$0.prev = context$1$0.next) {
+      case 0:
+        if (!(index < -1 || index >= middlewares.length)) {
+          context$1$0.next = 2;
+          break;
+        }
 
-  if (index < -1 || index >= middlewares.length) {
-    throw new Error('Index ' + index + ' is out of bounds.');
-  }
+        throw new Error('Index ' + index + ' is out of bounds.');
 
-  var middleware = middlewares[index];
-  return middleware.handle(request, response).then(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 2);
+      case 2:
+        middleware = middlewares[index];
+        context$1$0.next = 5;
+        return middleware.handle(request, response);
 
-    var request = _ref2[0];
-    var response = _ref2[1];
+      case 5:
+        result = context$1$0.sent;
 
-    index += 1;
+        index = index + 1;
 
-    if (index < middlewares.length) {
-      return _execute.call(_this, index, middlewares, request, response);
+        if (!(index < middlewares.length)) {
+          context$1$0.next = 10;
+          break;
+        }
+
+        context$1$0.next = 10;
+        return _execute.call(this, index, middlewares, result[0], result[1]);
+
+      case 10:
+        return context$1$0.abrupt('return', result);
+
+      case 11:
+      case 'end':
+        return context$1$0.stop();
     }
-
-    return [request, response];
-  });
+  }, null, this);
 };
 
 var Rack = (function () {
@@ -64,11 +88,13 @@ var Rack = (function () {
 
       var middlewares = this.middlewares;
 
-      if (!_.isNumber(index)) {
-        var instance = index;
-        index = Array.findIndex(middlewares, function (middleware) {
-          return middleware instanceof instance;
-        });
+      if (!isNumeric(index)) {
+        (function () {
+          var instance = index;
+          index = Array.findIndex(middlewares, function (middleware) {
+            return middleware instanceof instance;
+          });
+        })();
       }
 
       if (index < -1 || index >= middlewares.length) {
@@ -88,8 +114,8 @@ var Rack = (function () {
     key: 'useBefore',
     value: function useBefore(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = Array.findIndex(middlewares, function (middleware) {
-        return middleware instanceof instance;
+      var index = Array.findIndex(middlewares, function (existingMiddleware) {
+        return existingMiddleware instanceof instance;
       });
 
       if (index > -1) {
@@ -101,8 +127,8 @@ var Rack = (function () {
     key: 'useAfter',
     value: function useAfter(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = Array.findIndex(middlewares, function (middleware) {
-        return middleware instanceof instance;
+      var index = Array.findIndex(middlewares, function (existingMiddleware) {
+        return existingMiddleware instanceof instance;
       });
 
       if (index > -1) {
@@ -114,8 +140,8 @@ var Rack = (function () {
     key: 'swap',
     value: function swap(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = Array.findIndex(middlewares, function (middleware) {
-        return middleware instanceof instance;
+      var index = Array.findIndex(middlewares, function (existingMiddleware) {
+        return existingMiddleware instanceof instance;
       });
 
       if (index > -1) {
@@ -127,8 +153,8 @@ var Rack = (function () {
     key: 'remove',
     value: function remove(instance) {
       var middlewares = this.middlewares;
-      var index = Array.findIndex(middlewares, function (middleware) {
-        return middleware instanceof instance;
+      var index = Array.findIndex(middlewares, function (existingMiddleware) {
+        return existingMiddleware instanceof instance;
       });
 
       if (index > -1) {
@@ -156,18 +182,19 @@ var Rack = (function () {
 
       var middlewares = this.middlewares;
       var str = '';
-      var i, len;
-      var middleware;
+      var i = 0;
+      var len = 0;
+      var middleware = undefined;
 
       for (i = 0; i <= level; i++) {
-        str += '#';
+        str = '' + str + '#';
       }
 
-      str += this.name;
+      str = '' + str + 'this.name';
 
       for (i = 0, len = middlewares.length; i < len; i++) {
         middleware = middlewares[i];
-        str += '\n' + middleware.toString(level + 1);
+        str = '' + str + '\n' + middleware.toString(level + 1);
       }
 
       if (level > 0) {
@@ -175,7 +202,7 @@ var Rack = (function () {
       }
 
       try {
-        return asciitree.generate(str);
+        return _asciiTree2['default'].generate(str);
       } catch (e) {
         return str;
       }
