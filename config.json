@@ -12,6 +12,9 @@
       "browserify-shim"
     ]
   },
+  "babel": {
+    "stage": 1
+  },
   "releaseName": "rack.min.js",
   "build": "build",
   "dist": "dist",
