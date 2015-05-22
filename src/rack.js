@@ -5,34 +5,31 @@ let isNumeric = function (obj) {
   return !Array.isArray(obj) && (obj - parseFloat(obj) + 1) >= 0;
 };
 
-let execute = async function (index, middlewares, request, response) {
+let execute = async function (index, middlewares, request) {
+  // Throw error of an index that is out of bounds
   if (index < -1 || index >= middlewares.length) {
     throw new Error(`Index ${index} is out of bounds.`);
   }
 
+  // Get the middleware at index
   let middleware = middlewares[index];
-  let result = await middleware.handle(request, response);
 
+  // Process the request on the middleware
+  let response = await middleware.handle(request);
+
+  // Add 1 to the index
   index = index + 1;
 
+  // Execute the next middleware in the stack
   if (index < middlewares.length) {
-    result = await execute.call(this, index, middlewares, result[0], result[1]);
+    response = await execute.call(this, index, middlewares, response);
   }
 
-  return result;
+  return response;
 };
 
 class Rack {
   constructor(name = 'Rack', middlewares = []) {
-    if (Array.isArray(name)) {
-      middlewares = name;
-      name = 'Rack';
-    }
-
-    if (!Array.isArray(middlewares)) {
-      middlewares = [];
-    }
-
     this.name = name;
     this._middlewares = middlewares;
   }
@@ -112,11 +109,9 @@ class Rack {
     }
   }
 
-  execute(request) {
-    let middlewares = this.middlewares;
-    if (middlewares.length > 0) {
-      return execute.call(this, 0, middlewares, request);
-    }
+  async execute(request) {
+    let response = await execute.call(this, 0, this.middlewares, request);
+    return response;
   }
 
   handle(request) {
