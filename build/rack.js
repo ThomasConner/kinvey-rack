@@ -16,8 +16,8 @@ var isNumeric = function isNumeric(obj) {
   return !Array.isArray(obj) && obj - parseFloat(obj) + 1 >= 0;
 };
 
-var _execute = function _execute(index, middlewares, request, response) {
-  var middleware, result;
+var _execute = function _execute(index, middlewares, request) {
+  var middleware, response;
   return regeneratorRuntime.async(function _execute$(context$1$0) {
     while (1) switch (context$1$0.prev = context$1$0.next) {
       case 0:
@@ -31,11 +31,12 @@ var _execute = function _execute(index, middlewares, request, response) {
       case 2:
         middleware = middlewares[index];
         context$1$0.next = 5;
-        return middleware.handle(request, response);
+        return middleware.handle(request);
 
       case 5:
-        result = context$1$0.sent;
+        response = context$1$0.sent;
 
+        // Add 1 to the index
         index = index + 1;
 
         if (!(index < middlewares.length)) {
@@ -44,13 +45,13 @@ var _execute = function _execute(index, middlewares, request, response) {
         }
 
         context$1$0.next = 10;
-        return _execute.call(this, index, middlewares, result[0], result[1]);
+        return _execute.call(this, index, middlewares, response);
 
       case 10:
-        result = context$1$0.sent;
+        response = context$1$0.sent;
 
       case 11:
-        return context$1$0.abrupt('return', result);
+        return context$1$0.abrupt('return', response);
 
       case 12:
       case 'end':
@@ -65,15 +66,6 @@ var Rack = (function () {
     var middlewares = arguments[1] === undefined ? [] : arguments[1];
 
     _classCallCheck(this, Rack);
-
-    if (Array.isArray(name)) {
-      middlewares = name;
-      name = 'Rack';
-    }
-
-    if (!Array.isArray(middlewares)) {
-      middlewares = [];
-    }
 
     this.name = name;
     this._middlewares = middlewares;
@@ -168,10 +160,22 @@ var Rack = (function () {
   }, {
     key: 'execute',
     value: function execute(request) {
-      var middlewares = this.middlewares;
-      if (middlewares.length > 0) {
-        return _execute.call(this, 0, middlewares, request);
-      }
+      var response;
+      return regeneratorRuntime.async(function execute$(context$2$0) {
+        while (1) switch (context$2$0.prev = context$2$0.next) {
+          case 0:
+            context$2$0.next = 2;
+            return _execute.call(this, 0, this.middlewares, request);
+
+          case 2:
+            response = context$2$0.sent;
+            return context$2$0.abrupt('return', response);
+
+          case 4:
+          case 'end':
+            return context$2$0.stop();
+        }
+      }, null, this);
     }
   }, {
     key: 'handle',
@@ -216,3 +220,10 @@ var Rack = (function () {
 })();
 
 module.exports = Rack;
+
+// Throw error of an index that is out of bounds
+
+// Get the middleware at index
+
+// Process the request on the middleware
+// Execute the next middleware in the stack
