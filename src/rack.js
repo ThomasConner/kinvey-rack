@@ -1,11 +1,10 @@
-require('babel/polyfill');
 import asciitree from 'ascii-tree';
 
 let isNumeric = function (obj) {
   return !Array.isArray(obj) && (obj - parseFloat(obj) + 1) >= 0;
 };
 
-let execute = async function (index, middlewares, request) {
+let execute = function (index, middlewares, request) {
   // Throw error of an index that is out of bounds
   if (index < -1 || index >= middlewares.length) {
     throw new Error(`Index ${index} is out of bounds.`);
@@ -15,17 +14,17 @@ let execute = async function (index, middlewares, request) {
   let middleware = middlewares[index];
 
   // Process the request on the middleware
-  let response = await middleware.handle(request);
+  middleware.handle(request).then((response) => {
+    // Add 1 to the index
+    index = index + 1;
 
-  // Add 1 to the index
-  index = index + 1;
+    // Execute the next middleware in the stack
+    if (index < middlewares.length) {
+      return execute.call(this, index, middlewares, response);
+    }
 
-  // Execute the next middleware in the stack
-  if (index < middlewares.length) {
-    response = await execute.call(this, index, middlewares, response);
-  }
-
-  return response;
+    return response;
+  });
 };
 
 class Rack {
@@ -109,9 +108,8 @@ class Rack {
     }
   }
 
-  async execute(request) {
-    let response = await execute.call(this, 0, this.middlewares, request);
-    return response;
+  execute(request) {
+    return execute.call(this, 0, this.middlewares, request);
   }
 
   handle(request) {

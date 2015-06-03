@@ -17,47 +17,28 @@ var isNumeric = function isNumeric(obj) {
 };
 
 var _execute = function _execute(index, middlewares, request) {
-  var middleware, response;
-  return regeneratorRuntime.async(function _execute$(context$1$0) {
-    while (1) switch (context$1$0.prev = context$1$0.next) {
-      case 0:
-        if (!(index < -1 || index >= middlewares.length)) {
-          context$1$0.next = 2;
-          break;
-        }
+  var _this = this;
 
-        throw new Error('Index ' + index + ' is out of bounds.');
+  // Throw error of an index that is out of bounds
+  if (index < -1 || index >= middlewares.length) {
+    throw new Error('Index ' + index + ' is out of bounds.');
+  }
 
-      case 2:
-        middleware = middlewares[index];
-        context$1$0.next = 5;
-        return middleware.handle(request);
+  // Get the middleware at index
+  var middleware = middlewares[index];
 
-      case 5:
-        response = context$1$0.sent;
+  // Process the request on the middleware
+  middleware.handle(request).then(function (response) {
+    // Add 1 to the index
+    index = index + 1;
 
-        // Add 1 to the index
-        index = index + 1;
-
-        if (!(index < middlewares.length)) {
-          context$1$0.next = 11;
-          break;
-        }
-
-        context$1$0.next = 10;
-        return _execute.call(this, index, middlewares, response);
-
-      case 10:
-        response = context$1$0.sent;
-
-      case 11:
-        return context$1$0.abrupt('return', response);
-
-      case 12:
-      case 'end':
-        return context$1$0.stop();
+    // Execute the next middleware in the stack
+    if (index < middlewares.length) {
+      return _execute.call(_this, index, middlewares, response);
     }
-  }, null, this);
+
+    return response;
+  });
 };
 
 var Rack = (function () {
@@ -160,22 +141,7 @@ var Rack = (function () {
   }, {
     key: 'execute',
     value: function execute(request) {
-      var response;
-      return regeneratorRuntime.async(function execute$(context$2$0) {
-        while (1) switch (context$2$0.prev = context$2$0.next) {
-          case 0:
-            context$2$0.next = 2;
-            return _execute.call(this, 0, this.middlewares, request);
-
-          case 2:
-            response = context$2$0.sent;
-            return context$2$0.abrupt('return', response);
-
-          case 4:
-          case 'end':
-            return context$2$0.stop();
-        }
-      }, null, this);
+      return _execute.call(this, 0, this.middlewares, request);
     }
   }, {
     key: 'handle',
@@ -220,10 +186,3 @@ var Rack = (function () {
 })();
 
 module.exports = Rack;
-
-// Throw error of an index that is out of bounds
-
-// Get the middleware at index
-
-// Process the request on the middleware
-// Execute the next middleware in the stack
