@@ -1,16 +1,16 @@
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = require('babel-runtime/helpers/create-class')['default'];
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _Array$findIndex = require('babel-runtime/core-js/array/find-index')['default'];
+
+var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
 var _asciiTree = require('ascii-tree');
 
 var _asciiTree2 = _interopRequireDefault(_asciiTree);
-
-require('babel/polyfill');
 
 var isNumeric = function isNumeric(obj) {
   return !Array.isArray(obj) && obj - parseFloat(obj) + 1 >= 0;
@@ -19,20 +19,15 @@ var isNumeric = function isNumeric(obj) {
 var _execute = function _execute(index, middlewares, request) {
   var _this = this;
 
-  // Throw error of an index that is out of bounds
   if (index < -1 || index >= middlewares.length) {
     throw new Error('Index ' + index + ' is out of bounds.');
   }
 
-  // Get the middleware at index
   var middleware = middlewares[index];
 
-  // Process the request on the middleware
   middleware.handle(request).then(function (response) {
-    // Add 1 to the index
     index = index + 1;
 
-    // Execute the next middleware in the stack
     if (index < middlewares.length) {
       return _execute.call(_this, index, middlewares, response);
     }
@@ -43,8 +38,8 @@ var _execute = function _execute(index, middlewares, request) {
 
 var Rack = (function () {
   function Rack() {
-    var name = arguments[0] === undefined ? 'Rack' : arguments[0];
-    var middlewares = arguments[1] === undefined ? [] : arguments[1];
+    var name = arguments[0] === void 0 ? 'Rack' : arguments[0];
+    var middlewares = arguments[1] === void 0 ? [] : arguments[1];
 
     _classCallCheck(this, Rack);
 
@@ -60,14 +55,14 @@ var Rack = (function () {
   }, {
     key: 'getMiddleware',
     value: function getMiddleware() {
-      var index = arguments[0] === undefined ? -1 : arguments[0];
+      var index = arguments[0] === void 0 ? -1 : arguments[0];
 
       var middlewares = this.middlewares;
 
       if (!isNumeric(index)) {
         (function () {
           var instance = index;
-          index = Array.findIndex(middlewares, function (middleware) {
+          index = _Array$findIndex(middlewares, function (middleware) {
             return middleware instanceof instance;
           });
         })();
@@ -82,7 +77,7 @@ var Rack = (function () {
   }, {
     key: 'use',
     value: function use(middleware) {
-      if (middleware !== null && middleware !== undefined) {
+      if (middleware !== null && middleware !== void 0) {
         this._middlewares.push(middleware);
       }
     }
@@ -90,7 +85,7 @@ var Rack = (function () {
     key: 'useBefore',
     value: function useBefore(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = Array.findIndex(middlewares, function (existingMiddleware) {
+      var index = _Array$findIndex(middlewares, function (existingMiddleware) {
         return existingMiddleware instanceof instance;
       });
 
@@ -103,7 +98,7 @@ var Rack = (function () {
     key: 'useAfter',
     value: function useAfter(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = Array.findIndex(middlewares, function (existingMiddleware) {
+      var index = _Array$findIndex(middlewares, function (existingMiddleware) {
         return existingMiddleware instanceof instance;
       });
 
@@ -116,7 +111,7 @@ var Rack = (function () {
     key: 'swap',
     value: function swap(instance, middleware) {
       var middlewares = this.middlewares;
-      var index = Array.findIndex(middlewares, function (existingMiddleware) {
+      var index = _Array$findIndex(middlewares, function (existingMiddleware) {
         return existingMiddleware instanceof instance;
       });
 
@@ -129,7 +124,7 @@ var Rack = (function () {
     key: 'remove',
     value: function remove(instance) {
       var middlewares = this.middlewares;
-      var index = Array.findIndex(middlewares, function (existingMiddleware) {
+      var index = _Array$findIndex(middlewares, function (existingMiddleware) {
         return existingMiddleware instanceof instance;
       });
 
@@ -151,7 +146,7 @@ var Rack = (function () {
   }, {
     key: 'toString',
     value: function toString() {
-      var level = arguments[0] === undefined ? 0 : arguments[0];
+      var level = arguments[0] === void 0 ? 0 : arguments[0];
 
       var middlewares = this.middlewares;
       var str = '';

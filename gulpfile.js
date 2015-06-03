@@ -1,3 +1,5 @@
+/*eslint-disable*/
+
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var del = require('del');
@@ -7,7 +9,7 @@ var browserify = require('browserify');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var source = require('vinyl-source-stream');
-var config = require('./config.json');
+var config = require('./config');
 var eslint = require('gulp-eslint');
 var path = require('path');
 
