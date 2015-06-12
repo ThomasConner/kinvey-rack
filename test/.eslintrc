@@ -1,0 +1,11 @@
+{
+    "extends": "../.eslintrc",
+    "env": {
+        "mocha": true,
+        "node": true
+    },
+    "rules": {
+      "no-unused-expressions": 0, // disallow usage of expressions in statement position
+      "max-nested-callbacks": 0, // specify the maximum depth callbacks can be nested (off by default)
+    }
+}
