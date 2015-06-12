@@ -1,3 +1,5 @@
+/*eslint-disable */
+
 // Karma configuration
 // http://karma-runner.github.io/0.12/config/configuration-file.html
 // Generated on 2015-03-17 using
@@ -14,7 +16,7 @@ module.exports = function(config) {
     basePath: '../',
 
     // testing framework to use (jasmine/mocha/qunit/...)
-    frameworks: ['browserify', 'mocha', 'chai'],
+    frameworks: ['browserify', 'mocha', 'chai', 'es6-shim'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -49,7 +51,7 @@ module.exports = function(config) {
     // - PhantomJS
     // - IE (only Windows)
     browsers: [
-      //'PhantomJS',
+      'PhantomJS',
       'Chrome',
       'Safari',
       'Firefox'
@@ -65,7 +67,7 @@ module.exports = function(config) {
       'karma-mocha-reporter',
       'karma-chai',
       'karma-browserify',
-      'es6-shim'
+      'karma-es6-shim'
     ],
 
     // Continuous Integration mode

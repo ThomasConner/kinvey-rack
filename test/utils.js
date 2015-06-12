@@ -1,8 +1,8 @@
-var path = require('path');
-const importDir = path.normalize(__dirname + './../src');
+let path = require('path');
+const importDir = path.resolve(__dirname, './../src');
 
 const utils = {
-  importModule: function(file) {
+  importModule: (file) => {
     return require(path.normalize(importDir + '/' + file));
   }
 };
