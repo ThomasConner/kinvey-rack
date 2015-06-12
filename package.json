@@ -9,7 +9,7 @@
     "rack",
     "middleware"
   ],
-  "main": "build/rack",
+  "main": "build/export",
   "repository": {
     "type": "git",
     "url": "git@bitbucket.org:kinveyjs/rack.git"
