@@ -1,8 +1,4 @@
-import asciitree from 'ascii-tree';
-
-let isNumeric = function (obj) {
-  return !Array.isArray(obj) && (obj - parseFloat(obj) + 1) >= 0;
-};
+import Middleware from './middleware';
 
 let execute = function (index, middlewares, request) {
   // Throw error of an index that is out of bounds
@@ -14,7 +10,7 @@ let execute = function (index, middlewares, request) {
   let middleware = middlewares[index];
 
   // Process the request on the middleware
-  middleware.handle(request).then((response) => {
+  return middleware.handle(request).then((response) => {
     // Add 1 to the index
     index = index + 1;
 
@@ -27,10 +23,10 @@ let execute = function (index, middlewares, request) {
   });
 };
 
-class Rack {
-  constructor(name = 'Rack', middlewares = []) {
-    this.name = name;
-    this._middlewares = middlewares;
+class Rack extends Middleware {
+  constructor(name = 'Rack') {
+    super(name);
+    this._middlewares = [];
   }
 
   get middlewares() {
@@ -39,13 +35,6 @@ class Rack {
 
   getMiddleware(index = -1) {
     let middlewares = this.middlewares;
-
-    if (!isNumeric(index)) {
-      let instance = index;
-      index = Array.findIndex(middlewares, function (middleware) {
-        return (middleware instanceof instance);
-      });
-    }
 
     if (index < -1 || index >= middlewares.length) {
       throw new Error(`Index ${index} is out of bounds.`);
@@ -60,11 +49,9 @@ class Rack {
     }
   }
 
-  useBefore(instance, middleware) {
+  useBefore(middlewareClass, middleware) {
     let middlewares = this.middlewares;
-    let index = Array.findIndex(middlewares, function (existingMiddleware) {
-      return (existingMiddleware instanceof instance);
-    });
+    let index = middlewares.findIndex(existingMiddleware => existingMiddleware instanceof middlewareClass);
 
     if (index > -1) {
       middlewares.splice(index, 0, middleware);
@@ -72,11 +59,9 @@ class Rack {
     }
   }
 
-  useAfter(instance, middleware) {
+  useAfter(middlewareClass, middleware) {
     let middlewares = this.middlewares;
-    let index = Array.findIndex(middlewares, function (existingMiddleware) {
-      return (existingMiddleware instanceof instance);
-    });
+    let index = middlewares.findIndex(existingMiddleware => existingMiddleware instanceof middlewareClass);
 
     if (index > -1) {
       middlewares.splice(index + 1, 0, middleware);
@@ -84,11 +69,9 @@ class Rack {
     }
   }
 
-  swap(instance, middleware) {
+  swap(middlewareClass, middleware) {
     let middlewares = this.middlewares;
-    let index = Array.findIndex(middlewares, function (existingMiddleware) {
-      return (existingMiddleware instanceof instance);
-    });
+    let index = middlewares.findIndex(existingMiddleware => existingMiddleware instanceof middlewareClass);
 
     if (index > -1) {
       middlewares.splice(index, 1, middleware);
@@ -96,16 +79,19 @@ class Rack {
     }
   }
 
-  remove(instance) {
+  remove(middlewareClass) {
     let middlewares = this.middlewares;
-    let index = Array.findIndex(middlewares, function (existingMiddleware) {
-      return (existingMiddleware instanceof instance);
-    });
+    let index = middlewares.findIndex(existingMiddleware => existingMiddleware instanceof middlewareClass);
 
     if (index > -1) {
       middlewares.splice(index, 1);
       this._middlewares = middlewares;
+      this.remove(middlewareClass);
     }
+  }
+
+  reset() {
+    this._middlewares = [];
   }
 
   execute(request) {
@@ -116,34 +102,16 @@ class Rack {
     return this.execute(request);
   }
 
-  toString(level = 0) {
+  generateTree(level = 0) {
+    let root = super.generateTree(level);
     let middlewares = this.middlewares;
-    let str = '';
-    let i = 0;
-    let len = 0;
-    let middleware;
 
-    for (i = 0; i <= level; i++) {
-      str = `${str}#`;
-    }
+    middlewares.forEach((middleware) => {
+      root.nodes.push(middleware.generateTree(level + 1));
+    });
 
-    str = `${str}this.name`;
-
-    for (i = 0, len = middlewares.length; i < len; i++) {
-      middleware = middlewares[i];
-      str = `${str}\n${middleware.toString(level + 1)}`;
-    }
-
-    if (level > 0) {
-      return str;
-    }
-
-    try {
-      return asciitree.generate(str);
-    } catch(e) {
-      return str;
-    }
+    return root;
   }
 }
 
-module.exports = Rack;
+export default Rack;
