@@ -1,16 +1,30 @@
 {
   "name": "kinvey-rack",
-  "version": "0.9.3",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author" : "Kinvey, Inc.",
+  "description": "Manage a middleware stack easily.",
+  "keywords": [
+    "Kinvey",
+    "rack",
+    "middleware"
+  ],
   "main": "build/rack",
-  "repository": {},
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:kinveyjs/rack.git"
+  },
+  "homepage": "http://www.kinvey.com",
   "dependencies": {
     "ascii-tree": "^0.1.1",
     "babel": "^5.1.9",
     "babel-eslint": "^3.1.5",
+    "babel-runtime": "^5.4.7",
     "babelify": "^6.0.2",
     "browserify": "^9.0.8",
     "browserify-shim": "^3.8.5",
     "del": "^1.1.1",
+    "es6-shim": "^0.28",
     "gulp": "^3.8.11",
     "gulp-babel": "^5.1.0",
     "gulp-eslint": "^0.12.0",
@@ -32,8 +46,10 @@
     "karma-mocha": "^0.1.10",
     "karma-mocha-reporter": "^1.0.2",
     "karma-phantomjs-launcher": "^0.1.4",
+    "karma-requirejs": "^0.2.2",
     "karma-safari-launcher": "^0.1.1",
     "mocha": "^2.2",
+    "mocha-babel": "^3.0",
     "sinon": "^1.7",
     "sinon-chai": "^2.4"
   },
