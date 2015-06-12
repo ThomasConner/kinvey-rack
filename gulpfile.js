@@ -56,7 +56,7 @@ gulp.task('compress', function () {
 
 gulp.task('test', function (done) {
   karma.start({
-    configFile: path.join(__dirname, config.test.karmaConfig),
+    configFile: config.test.karmaConfig,
     singleRun: true
   }, done);
 });

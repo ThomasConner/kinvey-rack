@@ -2,21 +2,17 @@
 
 test: all
 
-all: test-http \
-	test-httpMethod \
-	test-nodeRequest \
-	test-response
+all: test-asciiTree \
+	test-middleware \
+	test-rack
 
-test-http:
-	@./node_modules/.bin/mocha --compilers js:babel/register --reporter spec --slow 500 --timeout 2000 server_test/spec/http.js
+test-asciiTree:
+	@./node_modules/.bin/mocha --compilers js:babel/register --reporter spec --slow 500 --timeout 2000 test/spec/asciiTree.spec.js
 
-test-httpMethod:
-	@./node_modules/.bin/mocha --compilers js:babel/register --reporter spec --slow 500 --timeout 2000 server_test/spec/httpMethod.js
+test-middleware:
+	@./node_modules/.bin/mocha --compilers js:babel/register --reporter spec --slow 500 --timeout 2000 test/spec/middleware.spec.js
 
-test-nodeRequest:
-	@./node_modules/.bin/mocha --compilers js:babel/register --reporter spec --slow 500 --timeout 2000 server_test/spec/nodeRequest.js
-
-test-response:
-	@./node_modules/.bin/mocha --compilers js:babel/register --reporter spec --slow 500 --timeout 2000 server_test/spec/response.js
+test-rack:
+	@./node_modules/.bin/mocha --compilers js:babel/register --reporter spec --slow 500 --timeout 2000 test/spec/rack.spec.js
 
 .PHONY: test

@@ -1,20 +1,24 @@
 'use strict';
 
+var _inherits = require('babel-runtime/helpers/inherits')['default'];
+
+var _get = require('babel-runtime/helpers/get')['default'];
+
 var _createClass = require('babel-runtime/helpers/create-class')['default'];
 
 var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
 
-var _Array$findIndex = require('babel-runtime/core-js/array/find-index')['default'];
+var _Object$defineProperty = require('babel-runtime/core-js/object/define-property')['default'];
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
-var _asciiTree = require('ascii-tree');
+_Object$defineProperty(exports, '__esModule', {
+  value: true
+});
 
-var _asciiTree2 = _interopRequireDefault(_asciiTree);
+var _middleware = require('./middleware');
 
-var isNumeric = function isNumeric(obj) {
-  return !Array.isArray(obj) && obj - parseFloat(obj) + 1 >= 0;
-};
+var _middleware2 = _interopRequireDefault(_middleware);
 
 var _execute = function _execute(index, middlewares, request) {
   var _this = this;
@@ -25,7 +29,7 @@ var _execute = function _execute(index, middlewares, request) {
 
   var middleware = middlewares[index];
 
-  middleware.handle(request).then(function (response) {
+  return middleware.handle(request).then(function (response) {
     index = index + 1;
 
     if (index < middlewares.length) {
@@ -36,37 +40,24 @@ var _execute = function _execute(index, middlewares, request) {
   });
 };
 
-var Rack = (function () {
+var Rack = (function (_Middleware) {
   function Rack() {
     var name = arguments[0] === void 0 ? 'Rack' : arguments[0];
-    var middlewares = arguments[1] === void 0 ? [] : arguments[1];
 
     _classCallCheck(this, Rack);
 
-    this.name = name;
-    this._middlewares = middlewares;
+    _get(Object.getPrototypeOf(Rack.prototype), 'constructor', this).call(this, name);
+    this._middlewares = [];
   }
 
+  _inherits(Rack, _Middleware);
+
   _createClass(Rack, [{
-    key: 'middlewares',
-    get: function () {
-      return this._middlewares.slice();
-    }
-  }, {
     key: 'getMiddleware',
     value: function getMiddleware() {
       var index = arguments[0] === void 0 ? -1 : arguments[0];
 
       var middlewares = this.middlewares;
-
-      if (!isNumeric(index)) {
-        (function () {
-          var instance = index;
-          index = _Array$findIndex(middlewares, function (middleware) {
-            return middleware instanceof instance;
-          });
-        })();
-      }
 
       if (index < -1 || index >= middlewares.length) {
         throw new Error('Index ' + index + ' is out of bounds.');
@@ -83,10 +74,10 @@ var Rack = (function () {
     }
   }, {
     key: 'useBefore',
-    value: function useBefore(instance, middleware) {
+    value: function useBefore(middlewareClass, middleware) {
       var middlewares = this.middlewares;
-      var index = _Array$findIndex(middlewares, function (existingMiddleware) {
-        return existingMiddleware instanceof instance;
+      var index = middlewares.findIndex(function (existingMiddleware) {
+        return existingMiddleware instanceof middlewareClass;
       });
 
       if (index > -1) {
@@ -96,10 +87,10 @@ var Rack = (function () {
     }
   }, {
     key: 'useAfter',
-    value: function useAfter(instance, middleware) {
+    value: function useAfter(middlewareClass, middleware) {
       var middlewares = this.middlewares;
-      var index = _Array$findIndex(middlewares, function (existingMiddleware) {
-        return existingMiddleware instanceof instance;
+      var index = middlewares.findIndex(function (existingMiddleware) {
+        return existingMiddleware instanceof middlewareClass;
       });
 
       if (index > -1) {
@@ -109,10 +100,10 @@ var Rack = (function () {
     }
   }, {
     key: 'swap',
-    value: function swap(instance, middleware) {
+    value: function swap(middlewareClass, middleware) {
       var middlewares = this.middlewares;
-      var index = _Array$findIndex(middlewares, function (existingMiddleware) {
-        return existingMiddleware instanceof instance;
+      var index = middlewares.findIndex(function (existingMiddleware) {
+        return existingMiddleware instanceof middlewareClass;
       });
 
       if (index > -1) {
@@ -122,16 +113,22 @@ var Rack = (function () {
     }
   }, {
     key: 'remove',
-    value: function remove(instance) {
+    value: function remove(middlewareClass) {
       var middlewares = this.middlewares;
-      var index = _Array$findIndex(middlewares, function (existingMiddleware) {
-        return existingMiddleware instanceof instance;
+      var index = middlewares.findIndex(function (existingMiddleware) {
+        return existingMiddleware instanceof middlewareClass;
       });
 
       if (index > -1) {
         middlewares.splice(index, 1);
         this._middlewares = middlewares;
+        this.remove(middlewareClass);
       }
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
+      this._middlewares = [];
     }
   }, {
     key: 'execute',
@@ -144,40 +141,28 @@ var Rack = (function () {
       return this.execute(request);
     }
   }, {
-    key: 'toString',
-    value: function toString() {
+    key: 'generateTree',
+    value: function generateTree() {
       var level = arguments[0] === void 0 ? 0 : arguments[0];
 
+      var root = _get(Object.getPrototypeOf(Rack.prototype), 'generateTree', this).call(this, level);
       var middlewares = this.middlewares;
-      var str = '';
-      var i = 0;
-      var len = 0;
-      var middleware = undefined;
 
-      for (i = 0; i <= level; i++) {
-        str = '' + str + '#';
-      }
+      middlewares.forEach(function (middleware) {
+        root.nodes.push(middleware.generateTree(level + 1));
+      });
 
-      str = '' + str + 'this.name';
-
-      for (i = 0, len = middlewares.length; i < len; i++) {
-        middleware = middlewares[i];
-        str = '' + str + '\n' + middleware.toString(level + 1);
-      }
-
-      if (level > 0) {
-        return str;
-      }
-
-      try {
-        return _asciiTree2['default'].generate(str);
-      } catch (e) {
-        return str;
-      }
+      return root;
+    }
+  }, {
+    key: 'middlewares',
+    get: function () {
+      return this._middlewares.slice();
     }
   }]);
 
   return Rack;
-})();
+})(_middleware2['default']);
 
-module.exports = Rack;
+exports['default'] = Rack;
+module.exports = exports['default'];
