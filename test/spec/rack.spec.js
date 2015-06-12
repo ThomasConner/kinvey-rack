@@ -1,5 +1,6 @@
 import Rack from '../../src/rack';
 import Middleware from '../../src/middleware';
+import Request from '../../src/request';
 import chai from 'chai';
 let expect = chai.expect;
 
@@ -34,10 +35,10 @@ describe('Rack', () => {
 
     describe('.getMiddleware()', () => {
       it('should respond', () => {
-        expect(Rack.prototype).to.respondTo('getMiddleware');
+        expect(Rack).to.respondTo('getMiddleware');
       });
 
-      it('should return middleware at the specified index', () => {
+      it('should return a middleware for the specified index', () => {
         let middlewareInstance = rack.getMiddleware(0);
         expect(middlewareInstance).to.be.an.instanceof(Middleware);
         expect(middlewareInstance).to.deep.equal(middleware);
@@ -57,7 +58,7 @@ describe('Rack', () => {
 
     describe('.use()', () => {
       it('should respond', () => {
-        expect(Rack.prototype).to.respondTo('use');
+        expect(Rack).to.respondTo('use');
       });
 
       it('should add a middleware to the end of the rack', () => {
@@ -73,11 +74,22 @@ describe('Rack', () => {
         // Remove the added middleware
         rack.remove(CustomMiddleware);
       });
+
+      it('should throw an error when trying to use something that isn\'t a Middleware', () => {
+        let customMiddleware = {};
+
+        try {
+          rack.use(customMiddleware);
+        } catch (err) {
+          expect(err).to.be.an.instanceof(Error);
+          expect(err.message).to.equal('Unable to use the middleware. It must be an instance of Middleware.');
+        }
+      });
     });
 
     describe('.useBefore()', () => {
       it('should respond', () => {
-        expect(Rack.prototype).to.respondTo('useBefore');
+        expect(Rack).to.respondTo('useBefore');
       });
 
       it('should add a middleware before an exisiting middleware', () => {
@@ -93,11 +105,22 @@ describe('Rack', () => {
         // Remove the added middleware
         rack.remove(CustomMiddleware);
       });
+
+      it('should throw an error when trying to use something that isn\'t a Middleware', () => {
+        let customMiddleware = {};
+
+        try {
+          rack.useBefore(Middleware, customMiddleware);
+        } catch (err) {
+          expect(err).to.be.an.instanceof(Error);
+          expect(err.message).to.equal('Unable to use the middleware. It must be an instance of Middleware.');
+        }
+      });
     });
 
     describe('.useAfter()', () => {
       it('should respond', () => {
-        expect(Rack.prototype).to.respondTo('useAfter');
+        expect(Rack).to.respondTo('useAfter');
       });
 
       it('should add a middleware after an exisiting middleware', () => {
@@ -113,11 +136,22 @@ describe('Rack', () => {
         // Remove the added middleware
         rack.remove(CustomMiddleware);
       });
+
+      it('should throw an error when trying to use something that isn\'t a Middleware', () => {
+        let customMiddleware = {};
+
+        try {
+          rack.useAfter(Middleware, customMiddleware);
+        } catch (err) {
+          expect(err).to.be.an.instanceof(Error);
+          expect(err.message).to.equal('Unable to use the middleware. It must be an instance of Middleware.');
+        }
+      });
     });
 
     describe('.swap()', () => {
       it('should respond', () => {
-        expect(Rack.prototype).to.respondTo('swap');
+        expect(Rack).to.respondTo('swap');
       });
 
       it('should swap an existing middleware with a middleware', () => {
@@ -133,11 +167,22 @@ describe('Rack', () => {
         // Swap the custom middleware
         rack.swap(CustomMiddleware, middleware);
       });
+
+      it('should throw an error when trying to use something that isn\'t a Middleware', () => {
+        let customMiddleware = {};
+
+        try {
+          rack.swap(Middleware, customMiddleware);
+        } catch (err) {
+          expect(err).to.be.an.instanceof(Error);
+          expect(err.message).to.equal('Unable to use the middleware. It must be an instance of Middleware.');
+        }
+      });
     });
 
     describe('.remove()', () => {
       it('should respond', () => {
-        expect(Rack.prototype).to.respondTo('remove');
+        expect(Rack).to.respondTo('remove');
       });
 
       it('should remove a middleware', () => {
@@ -153,7 +198,7 @@ describe('Rack', () => {
 
     describe('.reset()', () => {
       it('should respond', () => {
-        expect(Rack.prototype).to.respondTo('reset');
+        expect(Rack).to.respondTo('reset');
       });
 
       it('should remove all middleware', () => {
@@ -169,42 +214,48 @@ describe('Rack', () => {
 
     describe('.execute()', () => {
       it('should respond', () => {
-        expect(Rack.prototype).to.respondTo('execute');
+        expect(Rack).to.respondTo('execute');
       });
 
       it('should return a Promise', () => {
-        let request = {};
+        let request = new Request();
         let promise = rack.execute(request);
-
         expect(promise).to.be.an.instanceof(Promise);
+      });
+
+      it('should throw an error when trying to execute something that isn\'t a Request', () => {
+        let request = {};
+
+        try {
+          rack.execute(request);
+        } catch (err) {
+          expect(err).to.be.an.instanceof(Error);
+          expect(err.message).to.equal('Unable to execute the provided request. It must ' +
+                                       'be an instance of Request.');
+        }
       });
     });
 
     describe('.handle()', () => {
       it('should respond', () => {
-        expect(Rack.prototype).to.respondTo('handle');
+        expect(Rack).to.respondTo('handle');
       });
 
       it('should return a Promise', () => {
-        let request = {};
+        let request = new Request();
         let promise = rack.execute(request);
-
         expect(promise).to.be.an.instanceof(Promise);
-        // return promise.then((result) => {
-        //   expect(result).to.deep.equal(request);
-        // });
       });
     });
 
     describe('.toString()', () => {
       it('should respond', () => {
-        expect(Rack.prototype).to.respondTo('toString');
+        expect(Rack).to.respondTo('toString');
       });
 
       it('should return a string', () => {
         let description = rack.toString();
-
-        expect(typeof description).to.be.equal('string');
+        expect(description).to.be.a('string');
       });
     });
   });

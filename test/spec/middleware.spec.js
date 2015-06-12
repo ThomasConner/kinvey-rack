@@ -18,7 +18,7 @@ describe('Middleware', () => {
 
     describe('.handle()', () => {
       it('should respond', () => {
-        expect(Middleware.prototype).to.respondTo('handle');
+        expect(Middleware).to.respondTo('handle');
       });
 
       it('should return a Promise that is resolved', () => {
@@ -34,12 +34,12 @@ describe('Middleware', () => {
 
     describe('.toString()', () => {
       it('should respond', () => {
-        expect(Middleware.prototype).to.respondTo('toString');
+        expect(Middleware).to.respondTo('toString');
       });
 
       it('should return a string', () => {
         let description = middleware.toString();
-        expect(typeof description).to.be.equal('string');
+        expect(description).to.be.a('string');
       });
     });
   });
