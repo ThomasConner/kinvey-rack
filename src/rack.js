@@ -1,4 +1,5 @@
 import Middleware from './middleware';
+import Request from './request';
 
 let execute = function (index, middlewares, request) {
   // Throw error of an index that is out of bounds
@@ -45,37 +46,66 @@ class Rack extends Middleware {
 
   use(middleware) {
     if (middleware !== null && middleware !== undefined) {
-      this._middlewares.push(middleware);
+      if (middleware instanceof Middleware) {
+        this._middlewares.push(middleware);
+        return;
+      }
+
+      throw new Error('Unable to use the middleware. It must be an instance of Middleware.');
     }
   }
 
   useBefore(middlewareClass, middleware) {
-    let middlewares = this.middlewares;
-    let index = middlewares.findIndex(existingMiddleware => existingMiddleware instanceof middlewareClass);
+    if (middleware !== null && middleware !== undefined) {
+      if (middleware instanceof Middleware) {
+        let middlewares = this.middlewares;
+        let index = middlewares.findIndex(existingMiddleware => existingMiddleware instanceof middlewareClass);
 
-    if (index > -1) {
-      middlewares.splice(index, 0, middleware);
-      this._middlewares = middlewares;
+        if (index > -1) {
+          middlewares.splice(index, 0, middleware);
+          this._middlewares = middlewares;
+        }
+
+        return;
+      }
+
+      throw new Error('Unable to use the middleware. It must be an instance of Middleware.');
     }
   }
 
   useAfter(middlewareClass, middleware) {
-    let middlewares = this.middlewares;
-    let index = middlewares.findIndex(existingMiddleware => existingMiddleware instanceof middlewareClass);
+    if (middleware !== null && middleware !== undefined) {
+      if (middleware instanceof Middleware) {
+        let middlewares = this.middlewares;
+        let index = middlewares.findIndex(existingMiddleware => existingMiddleware instanceof middlewareClass);
 
-    if (index > -1) {
-      middlewares.splice(index + 1, 0, middleware);
-      this._middlewares = middlewares;
+        if (index > -1) {
+          middlewares.splice(index + 1, 0, middleware);
+          this._middlewares = middlewares;
+        }
+
+        return;
+      }
+
+      throw new Error('Unable to use the middleware. It must be an instance of Middleware.');
     }
   }
 
   swap(middlewareClass, middleware) {
-    let middlewares = this.middlewares;
-    let index = middlewares.findIndex(existingMiddleware => existingMiddleware instanceof middlewareClass);
+    if (middleware !== null && middleware !== undefined) {
+      if (middleware instanceof Middleware) {
+        let middlewares = this.middlewares;
+        let index = middlewares.findIndex(existingMiddleware => existingMiddleware instanceof middlewareClass);
 
-    if (index > -1) {
-      middlewares.splice(index, 1, middleware);
-      this._middlewares = middlewares;
+        if (index > -1) {
+          middlewares.splice(index, 1, middleware);
+          this._middlewares = middlewares;
+        }
+
+        return;
+      }
+
+      throw new Error('Unable to use the middleware. It must be an instance of Middleware.');
     }
   }
 
@@ -95,7 +125,11 @@ class Rack extends Middleware {
   }
 
   execute(request) {
-    return execute.call(this, 0, this.middlewares, request);
+    if (request instanceof Request) {
+      return execute.call(this, 0, this.middlewares, request);
+    }
+
+    return Promise.reject('Unable to execute the provided request. It must be an instance of Request.');
   }
 
   handle(request) {

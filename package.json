@@ -1,6 +1,6 @@
 {
   "name": "kinvey-rack",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "author" : "Kinvey, Inc.",
   "description": "Manage a middleware stack easily.",
@@ -16,7 +16,6 @@
   },
   "homepage": "http://www.kinvey.com",
   "dependencies": {
-    "ascii-tree": "^0.1.1",
     "babel": "^5.1.9",
     "babel-eslint": "^3.1.5",
     "babel-runtime": "^5.4.7",
