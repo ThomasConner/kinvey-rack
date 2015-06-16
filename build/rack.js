@@ -69,46 +69,75 @@ var Rack = (function (_Middleware) {
     key: 'use',
     value: function use(middleware) {
       if (middleware !== null && middleware !== void 0) {
-        this._middlewares.push(middleware);
+        if (middleware instanceof _middleware2['default']) {
+          this._middlewares.push(middleware);
+          return;
+        }
+
+        throw new Error('Unable to use the middleware. It must be an instance of Middleware.');
       }
     }
   }, {
     key: 'useBefore',
     value: function useBefore(middlewareClass, middleware) {
-      var middlewares = this.middlewares;
-      var index = middlewares.findIndex(function (existingMiddleware) {
-        return existingMiddleware instanceof middlewareClass;
-      });
+      if (middleware !== null && middleware !== void 0) {
+        if (middleware instanceof _middleware2['default']) {
+          var middlewares = this.middlewares;
+          var index = middlewares.findIndex(function (existingMiddleware) {
+            return existingMiddleware instanceof middlewareClass;
+          });
 
-      if (index > -1) {
-        middlewares.splice(index, 0, middleware);
-        this._middlewares = middlewares;
+          if (index > -1) {
+            middlewares.splice(index, 0, middleware);
+            this._middlewares = middlewares;
+          }
+
+          return;
+        }
+
+        throw new Error('Unable to use the middleware. It must be an instance of Middleware.');
       }
     }
   }, {
     key: 'useAfter',
     value: function useAfter(middlewareClass, middleware) {
-      var middlewares = this.middlewares;
-      var index = middlewares.findIndex(function (existingMiddleware) {
-        return existingMiddleware instanceof middlewareClass;
-      });
+      if (middleware !== null && middleware !== void 0) {
+        if (middleware instanceof _middleware2['default']) {
+          var middlewares = this.middlewares;
+          var index = middlewares.findIndex(function (existingMiddleware) {
+            return existingMiddleware instanceof middlewareClass;
+          });
 
-      if (index > -1) {
-        middlewares.splice(index + 1, 0, middleware);
-        this._middlewares = middlewares;
+          if (index > -1) {
+            middlewares.splice(index + 1, 0, middleware);
+            this._middlewares = middlewares;
+          }
+
+          return;
+        }
+
+        throw new Error('Unable to use the middleware. It must be an instance of Middleware.');
       }
     }
   }, {
     key: 'swap',
     value: function swap(middlewareClass, middleware) {
-      var middlewares = this.middlewares;
-      var index = middlewares.findIndex(function (existingMiddleware) {
-        return existingMiddleware instanceof middlewareClass;
-      });
+      if (middleware !== null && middleware !== void 0) {
+        if (middleware instanceof _middleware2['default']) {
+          var middlewares = this.middlewares;
+          var index = middlewares.findIndex(function (existingMiddleware) {
+            return existingMiddleware instanceof middlewareClass;
+          });
 
-      if (index > -1) {
-        middlewares.splice(index, 1, middleware);
-        this._middlewares = middlewares;
+          if (index > -1) {
+            middlewares.splice(index, 1, middleware);
+            this._middlewares = middlewares;
+          }
+
+          return;
+        }
+
+        throw new Error('Unable to use the middleware. It must be an instance of Middleware.');
       }
     }
   }, {

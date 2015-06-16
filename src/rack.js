@@ -1,5 +1,4 @@
 import Middleware from './middleware';
-import Request from './request';
 
 let execute = function (index, middlewares, request) {
   // Throw error of an index that is out of bounds
@@ -125,11 +124,7 @@ class Rack extends Middleware {
   }
 
   execute(request) {
-    if (request instanceof Request) {
-      return execute.call(this, 0, this.middlewares, request);
-    }
-
-    return Promise.reject('Unable to execute the provided request. It must be an instance of Request.');
+    return execute.call(this, 0, this.middlewares, request);
   }
 
   handle(request) {

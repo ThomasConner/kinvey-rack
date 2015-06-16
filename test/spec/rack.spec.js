@@ -1,6 +1,5 @@
 import Rack from '../../src/rack';
 import Middleware from '../../src/middleware';
-import Request from '../../src/request';
 import chai from 'chai';
 let expect = chai.expect;
 
@@ -218,21 +217,9 @@ describe('Rack', () => {
       });
 
       it('should return a Promise', () => {
-        let request = new Request();
+        let request = {};
         let promise = rack.execute(request);
         expect(promise).to.be.an.instanceof(Promise);
-      });
-
-      it('should throw an error when trying to execute something that isn\'t a Request', () => {
-        let request = {};
-
-        try {
-          rack.execute(request);
-        } catch (err) {
-          expect(err).to.be.an.instanceof(Error);
-          expect(err.message).to.equal('Unable to execute the provided request. It must ' +
-                                       'be an instance of Request.');
-        }
       });
     });
 
@@ -242,7 +229,7 @@ describe('Rack', () => {
       });
 
       it('should return a Promise', () => {
-        let request = new Request();
+        let request = {};
         let promise = rack.execute(request);
         expect(promise).to.be.an.instanceof(Promise);
       });
